@@ -361,3 +361,21 @@ TinyPNG-Unlimited/
 > **第 6-7 步的人工复制无法省略。** 控制台 `https://tinify.com/dashboard/api` 是**纯客户端渲染**的，
 > key 不在 HTML 里；而 `api.tinify.com` 又不认网页登录 cookie（一律 401）。
 > 这两条路都堵死了，程序拿不到 key，**只能人在页面上复制**。
+
+## 技术特色与复盘
+
+### 技术亮点
+
+- **开源项目接手维护**：本项目派生自 AkiChase/TinyPNG-Unlimited，上游停更后由我接手继续维护，在保留原有压缩核心能力的基础上持续修复与演进。
+- **GUI + CLI 双形态**：同一份产物「双击 = 图形界面、带参数 = 命令行」。图形界面基于 Tkinter（拖拽依赖 tkinterdnd2 可选降级），命令行通过 argparse 分发 `dir` / `file` / `tasks` 等子命令，同时覆盖批量交互与自动化脚本两种使用场景。
+- **四平台 CI 构建**：通过 GitHub Actions 在推送 `v*` tag 时自动构建并发布 Windows x64、macOS Apple Silicon、macOS Intel、Linux x64 四个平台产物，免去用户本地安装 Python / 打包的负担。
+- **Windows 崩溃修复**：将 Windows 产物按 windowed 子系统打包（PE `Subsystem=2`），解决双击时弹出多余控制台窗口的问题；带参数启动时通过 `AttachConsole` 重新挂回父控制台，保证输出、管道与退出码都和正常命令行程序一致。
+
+### 个人贡献
+
+- 以接手维护者身份主导本项目：GUI 重做、Windows 崩溃修复、四平台构建打通，并发布 v1.2.1 Release。
+
+### 收获与规划
+
+- **收获**：完整实践了「接手停更的开源项目 → 修复关键缺陷 → 打通构建与发布链路」的全过程，加深了对 Tkinter GUI、PyInstaller 打包与 GitHub Actions 跨平台构建的理解。
+- **规划**：后续继续迭代功能（如优化密钥管理、完善错误恢复与日志），保持 Release 稳定更新，维护好这个长期可用的 TinyPNG 批量压缩工具。
